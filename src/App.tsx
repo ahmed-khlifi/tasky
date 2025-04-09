@@ -1,9 +1,10 @@
-import AuthenticationScreen from "./AuthenticationScreen"
+import { RouterProvider } from "react-router"
+import appRouter from "./navigation"
 
 function App() {
 
   return (
-    <AuthenticationScreen />
+    <RouterProvider router={appRouter} />
   )
 }
 

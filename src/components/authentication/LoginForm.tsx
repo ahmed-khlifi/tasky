@@ -2,10 +2,13 @@ import { ArrowRight, Lock, Mail } from "lucide-react";
 import { FormEvent, useState } from "react";
 import InputText from "../ui/forms/InputText";
 import Button from "../ui/forms/Button";
+import useAuth from "../../hooks/useAuth";
 
 export default function LoginForm() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState('');
+
+    const { loginHandler } = useAuth();
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -46,6 +49,7 @@ export default function LoginForm() {
             </div>
 
             <Button
+                onClick={loginHandler}
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 flex items-center justify-center gap-2 transition-colors"
             >

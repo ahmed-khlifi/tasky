@@ -2,11 +2,14 @@ import { ArrowRight, Lock, Mail, User } from 'lucide-react';
 import { FormEvent, useState } from 'react'
 import InputText from '../ui/forms/InputText';
 import Button from '../ui/forms/Button';
+import useAuth from '../../hooks/useAuth';
 
 export default function RegisterForm() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState('');
+
+    const { registerHandler } = useAuth();
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -65,6 +68,7 @@ export default function RegisterForm() {
             </div>
 
             <Button
+                onClick={registerHandler}
                 type="submit"
             >
                 Create account
