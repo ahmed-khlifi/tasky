@@ -1,4 +1,4 @@
-import { ClipboardList, Hexagon, LayoutGrid, LogOut, Settings, User } from 'lucide-react'
+import { ClipboardList, Hexagon, LayoutGrid, LogOut, Settings } from 'lucide-react'
 import React from 'react'
 
 export default function Sidebar() {
