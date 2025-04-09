@@ -1,5 +1,5 @@
 import { RouterProvider } from "react-router"
-import appRouter from "./navigation"
+import appRouter from "./navigation/appRouter"
 
 function App() {
 
