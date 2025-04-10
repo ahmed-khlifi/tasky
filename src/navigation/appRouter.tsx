@@ -3,6 +3,7 @@ import AuthenticationScreen from "../AuthenticationScreen";
 import HomeScreen from "../screens/dashboard/HomeScreen";
 import RootLayout from "./layouts/RootLayout";
 import DashboardMainLayout from "./layouts/DashboardMainLayout";
+import TaskScreen from "../screens/dashboard/TaskScreen";
 
 const appRouter = createBrowserRouter(
     createRoutesFromElements(
@@ -10,7 +11,7 @@ const appRouter = createBrowserRouter(
             <Route path="auth" element={<AuthenticationScreen />} />
             <Route path="dashboard" element={<DashboardMainLayout />}>
                 <Route index element={<HomeScreen />} />
-                <Route path="profile" element={<div>Profile</div>} />
+                <Route path="tasks" element={<TaskScreen />} />
                 <Route path="settings" element={<div>Settings</div>} />
                 <Route path="*" element={<div>Not Found</div>} />
             </Route>
