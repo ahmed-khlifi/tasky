@@ -3,22 +3,34 @@ import { FormEvent, useState } from 'react'
 import InputText from '../ui/forms/InputText';
 import Button from '../ui/forms/Button';
 import useAuth from '../../hooks/useAuth';
+import FormError from '../ui/forms/FormError';
+import { validationErrorResponse } from '../../types/api.types';
 
 export default function RegisterForm() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState('');
 
-    const { registerHandler } = useAuth();
+    const { registerHandler, registerError, } = useAuth();
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
+        registerHandler({ email, password, name })
     };
 
     return (
 
 
         <form onSubmit={handleSubmit} className="space-y-6">
+            {
+                (registerError && (registerError as unknown as validationErrorResponse)?.length > 0) &&
+                <FormError
+                    error={registerError as unknown as validationErrorResponse} />
+            }
+            {
+                (registerError as any)?.error && <FormError
+                    error={[{ message: (registerError as any).error, field: "Login failed" }]} />
+            }
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name

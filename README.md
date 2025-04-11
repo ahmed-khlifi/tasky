@@ -39,7 +39,8 @@ frontend/
 │   ├── components/ # Reusable components
 │   ├── screens/    # Application pages
 │   ├── hooks/      # CSS/SCSS files
-|   |── types/      # types for components / api req/res ...
+|   |── types/      # types for components & api req/res ...
+|   |── api/        # api related calls & helpers
 |   |── navigation/ # routes and navigation layouts
 │   └── App.js      # Main app component
 ├── package.json    # Project metadata and dependencies

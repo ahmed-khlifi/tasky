@@ -10,9 +10,7 @@ export default function InputText({
 }: InputTextProps) {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (onChange && e.target.value) {
-            onChange(e.target.value);
-        }
+        onChange(e.target.value);
     };
 
     return (
