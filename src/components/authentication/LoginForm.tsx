@@ -3,19 +3,32 @@ import { FormEvent, useState } from "react";
 import InputText from "../ui/forms/InputText";
 import Button from "../ui/forms/Button";
 import useAuth from "../../hooks/useAuth";
+import FormError from "../ui/forms/FormError";
+import { validationErrorResponse } from "../../types/api.types";
 
 export default function LoginForm() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState('');
 
-    const { loginHandler } = useAuth();
+    const { loginHandler, loginError } = useAuth();
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
+        loginHandler({ email, password })
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
+            {
+                (loginError && (loginError as unknown as validationErrorResponse)?.length > 0) &&
+                <FormError
+                    error={loginError as unknown as validationErrorResponse} />
+            }
+            {
+                (loginError as any)?.error && <FormError
+                    error={[{ message: (loginError as any).error, field: "Login failed" }]} />
+            }
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email
@@ -31,7 +44,6 @@ export default function LoginForm() {
                     />
                 </div>
             </div>
-
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                     Password
@@ -47,9 +59,8 @@ export default function LoginForm() {
                     />
                 </div>
             </div>
-
             <Button
-                onClick={loginHandler}
+                onClick={handleSubmit}
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 flex items-center justify-center gap-2 transition-colors"
             >

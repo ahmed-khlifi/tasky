@@ -9,3 +9,10 @@ export interface Task {
 export const ItemTypes = {
     TASK: 'task',
 } as const;
+
+export type user = {
+    _id: string;
+    name: string;
+    email: string;
+    password: string;
+}
