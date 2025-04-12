@@ -19,8 +19,6 @@ export default function RegisterForm() {
     };
 
     return (
-
-
         <form onSubmit={handleSubmit} className="space-y-6">
             {
                 (registerError && (registerError as unknown as validationErrorResponse)?.length > 0) &&

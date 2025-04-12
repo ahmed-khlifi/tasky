@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-import useAuth from "../../hooks/useAuth";
 
 export default function RootLayout() {
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
     //const { isAuthenticated } = useAuth();
-    let isAuthenticated = true;
+    let isAuthenticated = localStorage.getItem("token") !== null;
     useEffect(() => {
         if (isAuthenticated !== undefined) {
             if (!isAuthenticated) {

@@ -27,6 +27,9 @@ export default function useAuth() {
 
 
     function logoutHandler() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/auth");
     }
 
 
