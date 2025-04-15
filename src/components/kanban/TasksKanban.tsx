@@ -47,7 +47,7 @@ function TasksKanban() {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="min-h-screen bg-gray-100 p-8">
+            <div className=" bg-gray-100 p-8">
                 <div className="flex gap-6 max-w-7xl mx-auto">
                     <KanbanColumn
                         title="To Do"
