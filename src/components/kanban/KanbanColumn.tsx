@@ -2,6 +2,8 @@ import { useDrop } from 'react-dnd';
 import { ItemTypes, Task } from '../../types/types';
 import { KanbanTaskCard } from './KanbanTaskCard';
 import KanbanColumnTitle from './KanbanColumnTitle';
+import AddTask from '../task/AddTask';
+import { useState } from 'react';
 
 interface ColumnProps {
     title: string;
@@ -12,6 +14,8 @@ interface ColumnProps {
 }
 
 export function KanbanColumn({ title, status, tasks, moveTask, onDropTask }: ColumnProps) {
+    const [currentModal, setCurrentModal] = useState<string | undefined>();
+
     const [{ isOver }, drop] = useDrop({
         accept: ItemTypes.TASK,
         drop: (item: { id: number }) => {
@@ -22,9 +26,17 @@ export function KanbanColumn({ title, status, tasks, moveTask, onDropTask }: Col
         }),
     });
 
+    const openModal = () => {
+        setCurrentModal(title);
+    }
+
+    const closeModal = () => {
+        setCurrentModal(undefined);
+    }
+
     return (
         <div>
-            <KanbanColumnTitle title={title} />
+            <KanbanColumnTitle title={title} onClick={openModal} />
             <div
                 ref={drop as any}
                 className={`
@@ -44,6 +56,12 @@ export function KanbanColumn({ title, status, tasks, moveTask, onDropTask }: Col
                     ))}
                 </div>
             </div>
+            <AddTask
+                isModalOpen={currentModal === title}
+                closeModal={closeModal}
+                defaultStatus={"Add Task"}
+                targetTask={title}
+            />
         </div>
     );
 }
