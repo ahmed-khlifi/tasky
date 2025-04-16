@@ -7,8 +7,6 @@ export default function Sidebar() {
     const { logoutHandler } = useAuth()
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    console.log(pathname);
-
 
     return (
         <div className='flex flex-col items-center justify-center gap-6 w-16 h-full'>
@@ -28,8 +26,10 @@ export default function Sidebar() {
                 <ClipboardList />
             </SideBarIcon>
             <SideBarIcon
-                active={pathname.includes("Settings")}
-                name='Settings'>
+                active={pathname.includes("settings")}
+                name='Settings'
+                onClick={() => navigate('settings')}>
+
                 <Settings />
             </SideBarIcon>
             <SideBarIcon name='Logout' onClick={logoutHandler}>
@@ -50,7 +50,7 @@ function SideBarIcon({ children, onClick, name, active = false }: { children: Re
                     'bg-white hover:bg-[#f6f6f6]'}
              }
              w-12 h-12 rounded-xl hover:rounded-4xl 
-             cursor-pointer shadow-xl shadow-[#5051F9]/10 
+             cursor-pointer shadow-xl shadow-[#0e0e0e]/10 
              transition-all duration-200 ease-in-out`}>
             {React.cloneElement(children as ReactElement<LucideProps>, { color: active ? "white" : "black" })}
         </div>
