@@ -4,6 +4,7 @@ import HomeScreen from "../screens/dashboard/HomeScreen";
 import RootLayout from "./layouts/RootLayout";
 import DashboardMainLayout from "./layouts/DashboardMainLayout";
 import TaskScreen from "../screens/dashboard/TaskScreen";
+import SettingsScreen from "../screens/dashboard/SettingsScreen";
 
 const appRouter = createBrowserRouter(
     createRoutesFromElements(
@@ -12,7 +13,7 @@ const appRouter = createBrowserRouter(
             <Route path="dashboard" element={<DashboardMainLayout />}>
                 <Route index element={<HomeScreen />} />
                 <Route path="tasks" element={<TaskScreen />} />
-                <Route path="settings" element={<div>Settings</div>} />
+                <Route path="settings" element={<SettingsScreen />} />
                 <Route path="*" element={<div>Not Found</div>} />
             </Route>
         </Route>

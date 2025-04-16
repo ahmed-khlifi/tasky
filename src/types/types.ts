@@ -16,3 +16,8 @@ export type user = {
     email: string;
     password: string;
 }
+
+export enum SettingsMenuTabs {
+    General = "general",
+    Security = "security",
+} 
