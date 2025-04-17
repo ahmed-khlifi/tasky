@@ -3,12 +3,15 @@ import Button from '../ui/forms/Button';
 import Select, { SelectInstance } from 'react-select';
 import { X } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { task } from '../../types/types';
+import { useMutation } from '@tanstack/react-query';
+import { addTask } from '../../api/task';
 
-const options = [
-    { value: 'To Do', label: 'To Do' },
-    { value: 'In Progress', label: 'In Progress' },
-    { value: 'Done', label: 'Done' },
-    { value: 'Cancelled', label: 'Cancelled' }
+const options: Array<{ label: string, value: task["status"] }> = [
+    { value: 'ToDo', label: 'To Do' },
+    { value: 'pending', label: 'In Progress' },
+    { value: 'completed', label: 'Done' },
+    { value: 'cancelled', label: 'Cancelled' }
 
 ]
 
@@ -29,9 +32,18 @@ export default function AddTask({
     closeModal: () => void;
     targetTask?: string;
 }) {
+    const [data, setData] = useState<Omit<task, "_id" | "date">>({
+        title: "",
+        description: "",
+        status: "ToDo"
+    });
     const [assigned, setAssigned] = useState<{ value: string, label: string } | undefined>();
 
     const selectRef = useRef<SelectInstance | null>(null)
+
+    const handleChange = ({ name, value }: { name: string; value: string }) => {
+        setData((prev) => ({ ...prev, [name]: value }));
+    };
 
     const handleAssign = (selectedOption: { value: string, label: string }) => {
         if (selectedOption) {
@@ -44,24 +56,42 @@ export default function AddTask({
         selectRef.current?.clearValue();
     }
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: addTask, onSuccess: () => {
+            console.log("Task added successfully");
+            closeModal();
+        }
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!data.title || !data.description || !data.status) {
+            alert("Please fill in all fields and assign a user.");
+            return;
+        }
+
+        mutate(data as task);
+    };
+
     return (
         <div>
             {isModalOpen && (
                 <div className="fixed inset-0 bg-blue-950/80 bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white rounded-lg shadow-lg w-96 p-6">
                         <h2 className="text-xl font-bold mb-4">📝 Add {targetTask || "New"} Task </h2>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <div className="mb-4">
                                 <InputText
-                                    onChange={() => { }}
+                                    onChange={(v) => handleChange({ name: "title", value: v })}
                                     type="text"
-                                    placeholder="Enter task name"
+                                    placeholder="Enter task title"
                                 />
                             </div>
                             <div className="mb-4">
                                 <textarea
                                     className="w-full border border-gray-300 rounded pl-5 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Enter task description"
+                                    onChange={(e) => handleChange({ name: "description", value: e.target.value })}
                                 ></textarea>
                             </div>
                             <div className="mb-4">
@@ -69,6 +99,11 @@ export default function AddTask({
                                     defaultValue={targetTask ? options.find((option) => option.value === targetTask) : null}
                                     // defaultInputValue='In Progress'
                                     options={options}
+                                    onChange={(selectedOption) => {
+                                        if (selectedOption) {
+                                            handleChange({ name: "status", value: selectedOption.value });
+                                        }
+                                    }}
                                     placeholder={"Current Status"} />
                             </div>
                             <div className="mb-4">
@@ -99,6 +134,7 @@ export default function AddTask({
                                     Cancel
                                 </Button>
                                 <Button
+                                    isLoading={isPending}
                                     type="submit"
                                 >
                                     Add Task
