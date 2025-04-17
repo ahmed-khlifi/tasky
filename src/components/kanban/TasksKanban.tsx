@@ -1,21 +1,46 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Task } from '../../types/types';
+import { task } from '../../types/types';
 import { KanbanColumn } from './KanbanColumn';
+import { useSocket } from '../../context/SocketContext';
+import { useQuery } from '@tanstack/react-query';
+import { getAllTasks } from '../../api/task';
 
-const initialTasks: Task[] = [
-    { id: 1, title: 'Research project requirements', status: 'ToDo' },
-    { id: 2, title: 'Create project timeline', status: 'ToDo' },
-    { id: 3, title: 'Design system architecture', status: 'InProgress' },
-    { id: 4, title: 'Implement core features', status: 'InProgress' },
-    { id: 5, title: 'Write documentation', status: 'Done' },
-];
 
 function TasksKanban() {
-    const [tasks, setTasks] = useState<Task[]>(initialTasks);
+    const [tasks, setTasks] = useState<task[]>([]);
+    const socket = useSocket();
 
-    const moveTask = useCallback((dragIndex: number, hoverIndex: number, status: Task['status']) => {
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['tasks'],
+        queryFn: getAllTasks
+    })
+
+    useEffect(() => {
+        if (data) {
+            setTasks(data);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        console.log('mysocket', socket);
+
+        if (!socket) return;
+
+        socket.on('taskCreated', (task) => {
+            if (task) {
+                setTasks((prevTasks) => [...prevTasks, task]);
+            }
+        });
+
+        return () => {
+            socket.off('taskCreated');
+        };
+    }, [socket]);
+
+
+    const moveTask = useCallback((dragIndex: number, hoverIndex: number, status: task['status']) => {
         setTasks((prevTasks) => {
             const filteredTasks = prevTasks.filter(t => t.status === status);
             const dragTask = filteredTasks[dragIndex];
@@ -31,19 +56,20 @@ function TasksKanban() {
                 ...newFilteredTasks,
             ];
         });
-    }, []);
+    }, [tasks]);
 
-    const handleDropTask = useCallback((id: number, newStatus: Task['status']) => {
+    const handleDropTask = useCallback((_id: string, newStatus: task['status']) => {
         setTasks((prevTasks) =>
             prevTasks.map((task) =>
-                task.id === id ? { ...task, status: newStatus } : task
+                task._id === _id ? { ...task, status: newStatus } : task
             )
         );
     }, []);
 
-    const getTasksByStatus = (status: Task['status']) => {
+    const getTasksByStatus = (status: task['status']) => {
         return tasks.filter((task) => task.status === status);
     };
+
 
     return (
         <DndProvider backend={HTML5Backend}>
@@ -57,23 +83,23 @@ function TasksKanban() {
                         onDropTask={handleDropTask}
                     />
                     <KanbanColumn
-                        title="In Progress"
-                        status="InProgress"
-                        tasks={getTasksByStatus('InProgress')}
+                        title="Pending"
+                        status="pending"
+                        tasks={getTasksByStatus('pending')}
                         moveTask={moveTask}
                         onDropTask={handleDropTask}
                     />
                     <KanbanColumn
-                        title="Done"
-                        status="Done"
-                        tasks={getTasksByStatus('Done')}
+                        title="Completed"
+                        status="completed"
+                        tasks={getTasksByStatus('completed')}
                         moveTask={moveTask}
                         onDropTask={handleDropTask}
                     />
                     <KanbanColumn
                         title="Cancelled"
-                        status="Cancelled"
-                        tasks={getTasksByStatus('Cancelled')}
+                        status="cancelled"
+                        tasks={getTasksByStatus('cancelled')}
                         moveTask={moveTask}
                         onDropTask={handleDropTask}
                     />

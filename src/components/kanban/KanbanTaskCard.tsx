@@ -1,17 +1,17 @@
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { ItemTypes, Task } from '../../types/types';
+import { ItemTypes, task } from '../../types/types';
 
 interface TaskCardProps {
-    task: Task;
+    task: task;
     index: number;
-    moveTask: (dragIndex: number, hoverIndex: number, status: Task['status']) => void;
+    moveTask: (dragIndex: number, hoverIndex: number, status: task['status']) => void;
 }
 
 interface DragItem {
     id: number;
     index: number;
-    status: Task['status'];
+    status: task['status'];
     type: string;
 }
 
@@ -20,7 +20,7 @@ export function KanbanTaskCard({ task, index, moveTask }: TaskCardProps) {
 
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.TASK,
-        item: { id: task.id, index, status: task.status, type: ItemTypes.TASK },
+        item: { _id: task._id, index, status: task.status, type: ItemTypes.TASK },
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
@@ -66,11 +66,11 @@ export function KanbanTaskCard({ task, index, moveTask }: TaskCardProps) {
         switch (task.status) {
             case 'ToDo':
                 return 'bg-gray-100';
-            case 'InProgress':
+            case 'pending':
                 return 'bg-blue-100';
-            case 'Done':
+            case 'completed':
                 return 'bg-green-100';
-            case 'Cancelled':
+            case 'cancelled':
                 return 'bg-red-100';
             default:
                 return 'bg-white';

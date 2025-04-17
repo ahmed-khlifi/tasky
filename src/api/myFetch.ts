@@ -4,16 +4,15 @@ export const myFetch = async  <T>(
     body?: object | null | FormData,
     headers?: HeadersInit
 ) => {
-    // TODO : add token to head,ers ( from local stroage)
 
     const apiUrl = import.meta.env.VITE_API_URL;
-    console.log(apiUrl, url);
+    const token = localStorage.getItem("token");
 
     return fetch(apiUrl + url, {
         method: method || "GET",
         headers: {
             "Content-Type": "application/json",
-            //        Authorization: token ? "Bearer " + token : "",
+            Authorization: token ? "Bearer " + token : "",
             ...headers,
         },
         body: JSON.stringify(body) || null,
@@ -25,3 +24,4 @@ export const myFetch = async  <T>(
         return await response.json() as T;
     });
 };
+
