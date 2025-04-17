@@ -1,10 +1,5 @@
-export type TaskStatus = 'ToDo' | 'InProgress' | 'Cancelled' | 'Done';
+export type TaskStatus = 'ToDo' | 'pending' | 'completed' | 'cancelled';
 
-export interface Task {
-    id: number;
-    title: string;
-    status: TaskStatus;
-}
 
 export const ItemTypes = {
     TASK: 'task',
@@ -20,4 +15,19 @@ export type user = {
 export enum SettingsMenuTabs {
     General = "general",
     Security = "security",
-} 
+}
+
+export type task = {
+    _id: string;
+    title: string;
+    description: string;
+    status: TaskStatus;
+    date: string;
+    assignedTo?: string | user;
+}
+
+export interface ClientToServerEvents {
+    'taskCreated': (taskId: task) => void;
+    'taskUpdated': (taskId: task) => void;
+    'taskDeleted': (taskId: task) => void;
+}

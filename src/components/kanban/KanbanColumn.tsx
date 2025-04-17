@@ -1,5 +1,5 @@
 import { useDrop } from 'react-dnd';
-import { ItemTypes, Task } from '../../types/types';
+import { ItemTypes, task } from '../../types/types';
 import { KanbanTaskCard } from './KanbanTaskCard';
 import KanbanColumnTitle from './KanbanColumnTitle';
 import AddTask from '../task/AddTask';
@@ -7,10 +7,10 @@ import { useState } from 'react';
 
 interface ColumnProps {
     title: string;
-    status: Task['status'];
-    tasks: Task[];
-    moveTask: (dragIndex: number, hoverIndex: number, status: Task['status']) => void;
-    onDropTask: (id: number, status: Task['status']) => void;
+    status: task['status'];
+    tasks: task[];
+    moveTask: (dragIndex: number, hoverIndex: number, status: task['status']) => void;
+    onDropTask: (_id: string, status: task['status']) => void;
 }
 
 export function KanbanColumn({ title, status, tasks, moveTask, onDropTask }: ColumnProps) {
@@ -18,8 +18,8 @@ export function KanbanColumn({ title, status, tasks, moveTask, onDropTask }: Col
 
     const [{ isOver }, drop] = useDrop({
         accept: ItemTypes.TASK,
-        drop: (item: { id: number }) => {
-            onDropTask(item.id, status);
+        drop: (item: { _id: string }) => {
+            onDropTask(item?._id, status);
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -48,7 +48,7 @@ export function KanbanColumn({ title, status, tasks, moveTask, onDropTask }: Col
                 <div className="space-y-2">
                     {tasks.map((task, index) => (
                         <KanbanTaskCard
-                            key={task.id}
+                            key={task._id}
                             task={task}
                             index={index}
                             moveTask={moveTask}
