@@ -12,7 +12,7 @@ function TasksKanban() {
     const [tasks, setTasks] = useState<task[]>([]);
     const socket = useSocket();
 
-    const { data, isLoading, error } = useQuery({
+    const { data, } = useQuery({
         queryKey: ['tasks'],
         queryFn: getAllTasks
     })
@@ -24,8 +24,6 @@ function TasksKanban() {
     }, [data]);
 
     useEffect(() => {
-        console.log('mysocket', socket);
-
         if (!socket) return;
 
         socket.on('taskCreated', (task) => {

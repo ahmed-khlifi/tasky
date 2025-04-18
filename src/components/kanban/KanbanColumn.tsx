@@ -59,7 +59,7 @@ export function KanbanColumn({ title, status, tasks, moveTask, onDropTask }: Col
             <AddTask
                 isModalOpen={currentModal === title}
                 closeModal={closeModal}
-                targetTask={title}
+                targetTask={status}
             />
         </div>
     );
