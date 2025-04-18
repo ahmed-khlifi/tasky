@@ -4,8 +4,9 @@ import Select, { SelectInstance } from 'react-select';
 import { X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { task } from '../../types/types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { addTask } from '../../api/task';
+import { getAllUsers } from '../../api/user';
 
 const options: Array<{ label: string, value: task["status"] }> = [
     { value: 'ToDo', label: 'To Do' },
@@ -15,12 +16,14 @@ const options: Array<{ label: string, value: task["status"] }> = [
 
 ]
 
-const users = [
-    { value: 'John Doe', label: 'John Doe', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" },
-    { value: 'Jane Smith', label: 'Jane Smith', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" },
-    { value: 'Alice Johnson', label: 'Alice Johnson', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" },
-    { value: 'Bob Brown', label: 'Bob Brown', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" }
+/**
+ const users = [
+    { value: '123', label: 'John Doe', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" },
+    { value: '456', label: 'Jane Smith', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" },
+    { value: '789', label: 'Alice Johnson', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" },
+    { value: '753', label: 'Bob Brown', avatar: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg" }
 ]
+ */
 
 export default function AddTask({
     isModalOpen,
@@ -30,14 +33,20 @@ export default function AddTask({
 }: {
     isModalOpen: boolean;
     closeModal: () => void;
-    targetTask?: string;
+    targetTask?: task["status"];
 }) {
     const [data, setData] = useState<Omit<task, "_id" | "date">>({
         title: "",
         description: "",
-        status: "ToDo"
+        status: targetTask ? targetTask : "ToDo"
     });
     const [assigned, setAssigned] = useState<{ value: string, label: string } | undefined>();
+
+    const { data: users } = useQuery({
+        queryFn: getAllUsers,
+        queryKey: ["users"],
+    })
+
 
     const selectRef = useRef<SelectInstance | null>(null)
 
@@ -69,8 +78,11 @@ export default function AddTask({
             alert("Please fill in all fields and assign a user.");
             return;
         }
-
-        mutate(data as task);
+        let submittedData: task = { ...data as task };
+        if (assigned?.value) {
+            submittedData.assignedTo = assigned.value;
+        }
+        mutate(submittedData);
     };
 
     return (
@@ -97,7 +109,6 @@ export default function AddTask({
                             <div className="mb-4">
                                 <Select
                                     defaultValue={targetTask ? options.find((option) => option.value === targetTask) : null}
-                                    // defaultInputValue='In Progress'
                                     options={options}
                                     onChange={(selectedOption) => {
                                         if (selectedOption) {
@@ -109,16 +120,23 @@ export default function AddTask({
                             <div className="mb-4">
                                 <Select
                                     ref={selectRef}
-
+                                    value={assigned}
                                     options={users}
                                     placeholder={"Assign"}
                                     onChange={handleAssign as any}
                                 />
                             </div>
                             {assigned && <div className='flex items-center gap-3 bg-blue-300/50 p-2 rounded-full mb-4'>
-                                <img
-                                    src={"https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2494/live/cc0a6500-0c00-11ed-93ba-314ede9cd985.jpg"} alt="task"
+                                {/**
+                                 * <img
+                                    src={assigned?.avatar} alt="task"
                                     className='w-10 h-10 object-cover rounded-full ring-2 ring-white' />
+                                 */}
+                                <div
+                                    className='w-10 h-10 object-cover rounded-full ring-2 ring-white flex items-center justify-center bg-blue-300'
+                                >
+                                    <p>{assigned?.label['0']?.toUpperCase()}</p>
+                                </div>
                                 <p className='text-sm font-semibold'>{assigned?.label}</p>
                                 <div
                                     onClick={handleRemoveAssign}
