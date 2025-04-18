@@ -5,7 +5,7 @@ import { task } from '../../types/types';
 import { KanbanColumn } from './KanbanColumn';
 import { useSocket } from '../../context/SocketContext';
 import { useQuery } from '@tanstack/react-query';
-import { getAllTasks } from '../../api/task';
+import { changeTaskStatus, getAllTasks } from '../../api/task';
 
 
 function TasksKanban() {
@@ -32,6 +32,15 @@ function TasksKanban() {
             }
         });
 
+        socket.on('taskStatusChange', ({ _id, status }) => {
+            setTasks((prevTasks) =>
+                prevTasks.map((task) =>
+                    task._id === _id ? { ...task, status } : task
+                )
+            );
+
+        })
+
         return () => {
             socket.off('taskCreated');
         };
@@ -54,7 +63,7 @@ function TasksKanban() {
                 ...newFilteredTasks,
             ];
         });
-    }, [tasks]);
+    }, []);
 
     const handleDropTask = useCallback((_id: string, newStatus: task['status']) => {
         setTasks((prevTasks) =>
@@ -62,6 +71,8 @@ function TasksKanban() {
                 task._id === _id ? { ...task, status: newStatus } : task
             )
         );
+        changeTaskStatus({ status: newStatus, taskId: _id })
+
     }, []);
 
     const getTasksByStatus = (status: task['status']) => {

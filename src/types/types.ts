@@ -27,7 +27,8 @@ export type task = {
 }
 
 export interface ClientToServerEvents {
-    'taskCreated': (taskId: task) => void;
-    'taskUpdated': (taskId: task) => void;
-    'taskDeleted': (taskId: task) => void;
+    'taskCreated': (task: task) => void;
+    'taskUpdated': (task: task) => void;
+    'taskDeleted': (task: task) => void;
+    'taskStatusChange': (task: task) => void
 }
