@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router'
 import Sidebar from '../../components/dashboard/Sidebar'
+import NotificationSideBar from '../../components/notification/NotificationSideBar'
 
 export default function DashboardMainLayout() {
     return (
@@ -9,6 +10,7 @@ export default function DashboardMainLayout() {
                 <Sidebar />
             </div>
             <div className="main-content">
+                <NotificationSideBar />
                 <Outlet />
             </div>
         </div>

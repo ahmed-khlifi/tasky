@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "./api/tanstackConf"
 import { SocketProvider } from "./context/SocketContext"
 import { AuthProvider } from "./context/AuthContext"
+import { ToastContainer } from "react-toastify"
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
           <RouterProvider router={appRouter} />
         </SocketProvider>
       </AuthProvider>
+      <ToastContainer />
     </QueryClientProvider>
   )
 }
